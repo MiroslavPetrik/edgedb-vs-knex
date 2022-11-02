@@ -1,0 +1,16 @@
+version: '3'
+services:
+  edgedb-vs-knex:
+    image: postgres:13.4
+    restart: always
+    ports:
+      - '${DB_PORT}:5432'
+    environment:
+      POSTGRES_USER: 'postgres'
+      POSTGRES_PASSWORD: 'postgres'
+      POSTGRES_DB: '${DB_NAME}'
+    volumes:
+      - edgedb-vs-knex-volume:/var/lib/postgresql/data
+
+volumes:
+  edgedb-vs-knex-volume:

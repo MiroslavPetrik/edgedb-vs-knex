@@ -1,0 +1,21 @@
+{
+  "name": "edgedb",
+  "author": "Miroslav Petrik",
+  "scripts": {
+    "test": "NODE_ENV=test jest -c ./jest.config.ts -i --forceExit",
+    "edgedb:start": "edgedb instance start -I edgedb_vs_knex",
+    "edgedb:cleanup": "edgedb query --file ./src/seed/cleanup.edgeql",
+    "edgedb:seed": "edgedb query --file ./src/seed/data.edgeql",
+    "edgedb:gen": "npx @edgedb/generate edgeql-js --out src/edgedb/builder",
+    "edgedb:gen:interfaces": "npx @edgedb/generate interfaces",
+    "edgedb:gen:queries": "npx @edgedb/generate queries --target ts"
+  },
+  "dependencies": {
+    "edgedb": "1.0.0"
+  },
+  "devDependencies": {
+    "@edgedb/generate": "0.0.3",
+    "jest": "^29.2.2",
+    "ts-jest": "^29.0.3"
+  }
+}
