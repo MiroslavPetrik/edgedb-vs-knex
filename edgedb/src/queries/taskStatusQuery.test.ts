@@ -18,14 +18,14 @@ describe('taskStatus', () => {
     currentUserClient = client.withGlobals({ currentUserId: currentUser.id })
   })
 
-  describe('with the due date is in the future', () => {
+  describe('with the due date in the future', () => {
     let dueAt: Date
     const title = 'test'
 
     beforeAll(async () => {
       dueAt = await e
         .select(e.op(e.datetime_current(), '+', e.cal.date_duration('2 days')))
-        .run(currentUserClient)
+        .run(client)
     })
 
     it('equals InProgress when last action is Opened', async () => {
@@ -35,7 +35,7 @@ describe('taskStatus', () => {
         assignees: [currentUser.id],
       })
 
-      const result = await taskStatusQuery.run(currentUserClient, task)
+      const result = await taskStatusQuery.run(client, task)
 
       if (!result) {
         return
@@ -59,7 +59,7 @@ describe('taskStatus', () => {
         })
         .run(currentUserClient)
 
-      const result = await taskStatusQuery.run(currentUserClient, task)
+      const result = await taskStatusQuery.run(client, task)
 
       if (!result) {
         return
@@ -83,7 +83,7 @@ describe('taskStatus', () => {
         })
         .run(currentUserClient)
 
-      const result = await taskStatusQuery.run(currentUserClient, task)
+      const result = await taskStatusQuery.run(client, task)
 
       if (!result) {
         return
@@ -93,14 +93,14 @@ describe('taskStatus', () => {
     })
   })
 
-  describe('with the due date is in the past', () => {
+  describe('with the due date in the past', () => {
     let dueAt: Date
     const title = 'test'
 
     beforeAll(async () => {
       dueAt = await e
         .select(e.op(e.datetime_current(), '-', e.cal.date_duration('2 days')))
-        .run(currentUserClient)
+        .run(client)
     })
 
     it('equals PastDue when last action is Opened', async () => {
@@ -110,7 +110,7 @@ describe('taskStatus', () => {
         assignees: [currentUser.id],
       })
 
-      const result = await taskStatusQuery.run(currentUserClient, task)
+      const result = await taskStatusQuery.run(client, task)
 
       if (!result) {
         return
@@ -134,7 +134,7 @@ describe('taskStatus', () => {
         })
         .run(currentUserClient)
 
-      const result = await taskStatusQuery.run(currentUserClient, task)
+      const result = await taskStatusQuery.run(client, task)
 
       if (!result) {
         return
@@ -158,7 +158,7 @@ describe('taskStatus', () => {
         })
         .run(currentUserClient)
 
-      const result = await taskStatusQuery.run(currentUserClient, task)
+      const result = await taskStatusQuery.run(client, task)
 
       if (!result) {
         return
