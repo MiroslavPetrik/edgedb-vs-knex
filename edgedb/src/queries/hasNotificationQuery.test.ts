@@ -1,37 +1,38 @@
-import { createTask } from './createTask'
-import { selectHasNotification } from './selectHasNotification'
+import { hasNotificationQuery } from './hasNotificationQuery'
 import { selectUsers } from './helpers/selectUsers'
 import { Task, User } from '../../dbschema/interfaces'
 import e from '../edgedb/builder'
 import { client } from '../edgedb/client'
+import { Client } from 'edgedb'
+import { createTaskQuery } from './createTaskQuery'
 
 describe('selectHasNotification', () => {
   let currentUser: User
   let otherUser: User
+  let currentUserClient: Client
+  let otherUserClient: Client
 
   beforeAll(async () => {
     ;[currentUser, otherUser] = await selectUsers()
+    currentUserClient = client.withGlobals({ currentUserId: currentUser.id })
+    otherUserClient = client.withGlobals({ currentUserId: otherUser.id })
   })
 
   describe('when currentUser creates task with two assignees', () => {
     let task: Pick<Task, 'id'>
 
     beforeAll(async () => {
-      const input = {
+      let result = await createTaskQuery.run(currentUserClient, {
         title: 'Task',
-        assignees: [currentUser.id, otherUser.id],
         dueAt: new Date(),
-        userId: currentUser.id,
-      }
-
-      let result = await createTask(input)
+        assignees: [currentUser.id, otherUser.id],
+      })
       task = result.task
     })
 
     it('should not return notification for currentUser', async () => {
-      const result = await selectHasNotification({
-        taskId: task.id,
-        userId: currentUser.id,
+      const result = await hasNotificationQuery.run(currentUserClient, {
+        id: task.id,
       })
 
       if (!result) {
@@ -42,9 +43,8 @@ describe('selectHasNotification', () => {
     })
 
     it('should return notification for otherUser', async () => {
-      const result = await selectHasNotification({
-        taskId: task.id,
-        userId: otherUser.id,
+      const result = await hasNotificationQuery.run(otherUserClient, {
+        id: task.id,
       })
 
       if (!result) {
@@ -59,14 +59,11 @@ describe('selectHasNotification', () => {
     let task: Pick<Task, 'id'>
 
     beforeAll(async () => {
-      const input = {
+      let result = await createTaskQuery.run(currentUserClient, {
         title: 'Task',
-        assignees: [currentUser.id, otherUser.id],
         dueAt: new Date(),
-        userId: currentUser.id,
-      }
-
-      let result = await createTask(input)
+        assignees: [currentUser.id, otherUser.id],
+      })
       task = result.task
 
       await e
@@ -74,13 +71,12 @@ describe('selectHasNotification', () => {
           task: e.select(e.Task, () => ({ filter_single: { id: task.id } })),
           user: e.global.currentUser,
         })
-        .run(client.withGlobals({ currentUserId: otherUser.id }))
+        .run(otherUserClient)
     })
 
     it('should not return any notification for otherUser', async () => {
-      const result = await selectHasNotification({
-        taskId: task.id,
-        userId: otherUser.id,
+      const result = await hasNotificationQuery.run(otherUserClient, {
+        id: task.id,
       })
 
       if (!result) {
@@ -95,14 +91,11 @@ describe('selectHasNotification', () => {
     let task: Pick<Task, 'id'>
 
     beforeAll(async () => {
-      const input = {
+      let result = await createTaskQuery.run(currentUserClient, {
         title: 'Task',
-        assignees: [currentUser.id, otherUser.id],
         dueAt: new Date(),
-        userId: currentUser.id,
-      }
-
-      let result = await createTask(input)
+        assignees: [currentUser.id, otherUser.id],
+      })
       task = result.task
 
       await e
@@ -110,7 +103,7 @@ describe('selectHasNotification', () => {
           task: e.select(e.Task, () => ({ filter_single: { id: task.id } })),
           user: e.global.currentUser,
         })
-        .run(client.withGlobals({ currentUserId: otherUser.id }))
+        .run(otherUserClient)
 
       await e
         .insert(e.TaskComment, {
@@ -118,13 +111,12 @@ describe('selectHasNotification', () => {
           user: e.global.currentUser,
           note: 'Comment',
         })
-        .run(client.withGlobals({ currentUserId: currentUser.id }))
+        .run(currentUserClient)
     })
 
     it('should return no notification for currentUser', async () => {
-      const result = await selectHasNotification({
-        taskId: task.id,
-        userId: currentUser.id,
+      const result = await hasNotificationQuery.run(currentUserClient, {
+        id: task.id,
       })
 
       if (!result) {
@@ -135,9 +127,8 @@ describe('selectHasNotification', () => {
     })
 
     it('should return notification for otherUser', async () => {
-      const result = await selectHasNotification({
-        taskId: task.id,
-        userId: otherUser.id,
+      const result = await hasNotificationQuery.run(otherUserClient, {
+        id: task.id,
       })
 
       if (!result) {
