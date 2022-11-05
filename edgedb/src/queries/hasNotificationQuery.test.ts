@@ -5,6 +5,7 @@ import e from '../edgedb/builder'
 import { client } from '../edgedb/client'
 import { Client } from 'edgedb'
 import { createTaskQuery } from './createTaskQuery'
+import { cleanup } from './helpers/cleanup'
 
 describe('selectHasNotification', () => {
   let currentUser: User
@@ -17,6 +18,8 @@ describe('selectHasNotification', () => {
     currentUserClient = client.withGlobals({ currentUserId: currentUser.id })
     otherUserClient = client.withGlobals({ currentUserId: otherUser.id })
   })
+
+  afterAll(cleanup)
 
   describe('when currentUser creates task with two assignees', () => {
     let task: Pick<Task, 'id'>

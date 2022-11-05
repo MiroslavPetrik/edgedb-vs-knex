@@ -40,3 +40,11 @@ select Task {
     select (not exists lastSeen) or (lastSeen.createdAt < lastEvent.createdAt)
   ),
 } filter global currentUser in .assignees;
+
+
+with N := (select Task filter .hasNotification and global currentUser in .assignees)
+select {
+  matches := N {status},
+  total := count(N),
+  totalTasks := count(Task),
+};

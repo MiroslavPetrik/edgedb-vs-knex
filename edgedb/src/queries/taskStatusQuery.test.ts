@@ -1,14 +1,17 @@
-import { taskStatusQuery } from './taskStatus'
+import { taskStatusQuery } from './taskStatusQuery'
 import { selectUsers } from './helpers/selectUsers'
 import { User } from '../../dbschema/interfaces'
 import e from '../edgedb/builder'
 import { client } from '../edgedb/client'
 import { createTaskQuery } from './createTaskQuery'
 import { Client } from 'edgedb'
+import { cleanup } from './helpers/cleanup'
 
 describe('taskStatus', () => {
   let currentUser: User
   let currentUserClient: Client
+
+  afterAll(cleanup)
 
   beforeAll(async () => {
     ;[currentUser] = await selectUsers()
