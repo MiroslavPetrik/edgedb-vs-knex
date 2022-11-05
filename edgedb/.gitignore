@@ -1,1 +1,2 @@
 src/edgedb/builder
+dbschema/interfaces.ts

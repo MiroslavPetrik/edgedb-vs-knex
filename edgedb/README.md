@@ -6,7 +6,8 @@
 2. Initialize project `edgedb init`
 3. Copy `.env.example` as `.env` and set the `EDGEDB_DSN`
 4. Build the builder `yarn edgedb:gen`
-5. Create users `yarn edgedb:seed`
+5. Build the interfaces `yarn edgedb:gen:interfaces`
+6. Create users `yarn edgedb:seed`
 
 ## Run jest tests
 
