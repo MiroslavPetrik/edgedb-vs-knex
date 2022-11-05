@@ -1,5 +1,4 @@
 import { taskStatusQuery } from './taskStatusQuery'
-import { selectUsers } from './helpers/selectUsers'
 import { User } from '../../dbschema/interfaces'
 import e from '../edgedb/builder'
 import { client } from '../edgedb/client'
@@ -14,7 +13,12 @@ describe('taskStatus', () => {
   afterAll(cleanup)
 
   beforeAll(async () => {
-    ;[currentUser] = await selectUsers()
+    ;[currentUser] = await e
+      .select(e.User, () => ({
+        ...e.User['*'],
+        limit: 1,
+      }))
+      .run(client)
     currentUserClient = client.withGlobals({ currentUserId: currentUser.id })
   })
 

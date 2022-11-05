@@ -1,4 +1,3 @@
-import { selectUsers } from './helpers/selectUsers'
 import { User } from '../../dbschema/interfaces'
 import e from '../edgedb/builder'
 import { client } from '../edgedb/client'
@@ -15,7 +14,12 @@ describe('countNotificationsQuery', () => {
 
   beforeAll(async () => {
     await cleanup()
-    ;[currentUser, otherUser] = await selectUsers()
+    ;[currentUser, otherUser] = await e
+      .select(e.User, () => ({
+        ...e.User['*'],
+        limit: 2,
+      }))
+      .run(client)
     currentUserClient = client.withGlobals({ currentUserId: currentUser.id })
     otherUserClient = client.withGlobals({ currentUserId: otherUser.id })
   })
