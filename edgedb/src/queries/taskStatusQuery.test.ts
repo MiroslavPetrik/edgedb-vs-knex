@@ -6,7 +6,7 @@ import { createTaskQuery } from './createTaskQuery'
 import { Client } from 'edgedb'
 import { cleanup } from './helpers/cleanup'
 
-describe('taskStatus', () => {
+describe('taskStatusQuery', () => {
   let currentUser: User
   let currentUserClient: Client
 
@@ -45,7 +45,7 @@ describe('taskStatus', () => {
         throw new Error()
       }
 
-      expect(result.status).toBe('InProgress')
+      expect(result.computedStatus).toBe('InProgress')
     })
 
     it('equals InProgress when last action is Edited', async () => {
@@ -69,7 +69,7 @@ describe('taskStatus', () => {
         throw new Error()
       }
 
-      expect(result.status).toBe('InProgress')
+      expect(result.computedStatus).toBe('InProgress')
     })
 
     it('equals Completed when last action is Closed', async () => {
@@ -93,7 +93,7 @@ describe('taskStatus', () => {
         throw new Error()
       }
 
-      expect(result.status).toBe('Completed')
+      expect(result.computedStatus).toBe('Completed')
     })
   })
 
@@ -120,7 +120,7 @@ describe('taskStatus', () => {
         throw new Error()
       }
 
-      expect(result.status).toBe('PastDue')
+      expect(result.computedStatus).toBe('PastDue')
     })
 
     it('equals PastDue when last action is Edited', async () => {
@@ -144,7 +144,7 @@ describe('taskStatus', () => {
         throw new Error()
       }
 
-      expect(result.status).toBe('PastDue')
+      expect(result.computedStatus).toBe('PastDue')
     })
 
     it('equals Completed when last action is Closed', async () => {
@@ -168,7 +168,7 @@ describe('taskStatus', () => {
         throw new Error()
       }
 
-      expect(result.status).toBe('Completed')
+      expect(result.computedStatus).toBe('Completed')
     })
   })
 })
