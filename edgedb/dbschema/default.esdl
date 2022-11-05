@@ -32,9 +32,9 @@ module default {
 
       # datetime_of_statement is non-volatile (datetime_current will raise compilation error)
       property status := (select
-        TaskStatus.InProgress if .lastAction.kind != TaskActionKind.Closed and .dueAt > datetime_of_statement() else
-        TaskStatus.PastDue if .lastAction.kind != TaskActionKind.Closed and .dueAt <= datetime_of_statement() else
-        TaskStatus.Completed
+        TaskStatus.Completed if .lastAction.kind = TaskActionKind.Closed else
+        TaskStatus.PastDue if .dueAt <= datetime_of_statement() else
+        TaskStatus.InProgress
       );
 
       link lastSeenEvent := (

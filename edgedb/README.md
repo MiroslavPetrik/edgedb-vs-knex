@@ -21,6 +21,6 @@ You can run those by calling `edgedb query --file $path` from the workspace root
 
 Example:
 
-`edgedb query --file ./src/queries/test/task.with.dueAt.in.past.should.have.pastDueStatus.edgeql`
+`edgedb query --file ./src/queries/test/taskStatus.edgeql`
 
 When there is no error, the test passed. Don't expect any 'passed' message in a green color.
