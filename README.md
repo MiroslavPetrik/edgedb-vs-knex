@@ -1,10 +1,30 @@
 # edgedb-vs-knex
 
-## About
+This project contains two Typescript implementations of a task system. The reference implementation is in 'traditional' [knex](knex)/[objection](objection) ORM. The second implementation is in a modern graph-relational EdgeDB using its awesome query builder.
 
-## Goals
+The goal of this project is to practicaly test out the EdgeDB and compare it side-by-side with a traditional ORM setup.
 
-As our business logic, we have the following queries (from the least to the most complex)
+## Schema
+
+![](./images/schema.png)
+
+- gray box - abstract class
+- blue box - concrete entities
+- gray arrow - inheritance
+- pink arrow - relation
+
+### Description
+
+At the center of our model is a **Task** which holds a `title`, `dueDate` and `assignees`. Each task can be `Opened`, `Closed` or `Edited` multiple times. The state of the task is tracked by the **TaskAction**. From the combination of the `dueDate` and the _last action_ we will compute a `status`.
+
+Next, there is **TaskComment** related to a user & a task.
+Together with **TaskAction**, they extend the **TaskNotificationEvent**, meaning that when an action or comment is added to the task, the `assignees` will have see a 'notification flag' when quering the task.
+
+Finally, to 'clear the notification' user will add a **TaskSeenEvent** which will 'shadow' the **TaskNotificationEvent** -- when the _last seen event_ is the most recent than all the notification events, the task will not have a notification.
+
+## Queries
+
+Based on the description, we've implemented three queries:
 
 | Query                   | Kind                              | EdgeDB                                                                     | Knex                                                           |
 | ----------------------- | --------------------------------- | -------------------------------------------------------------------------- | -------------------------------------------------------------- |
