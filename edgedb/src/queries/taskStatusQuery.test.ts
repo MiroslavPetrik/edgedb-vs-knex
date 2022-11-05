@@ -38,7 +38,7 @@ describe('taskStatus', () => {
       const result = await taskStatusQuery.run(client, task)
 
       if (!result) {
-        return
+        throw new Error()
       }
 
       expect(result.status).toBe('InProgress')
@@ -62,7 +62,7 @@ describe('taskStatus', () => {
       const result = await taskStatusQuery.run(client, task)
 
       if (!result) {
-        return
+        throw new Error()
       }
 
       expect(result.status).toBe('InProgress')
@@ -86,7 +86,7 @@ describe('taskStatus', () => {
       const result = await taskStatusQuery.run(client, task)
 
       if (!result) {
-        return
+        throw new Error()
       }
 
       expect(result.status).toBe('Completed')
@@ -113,7 +113,7 @@ describe('taskStatus', () => {
       const result = await taskStatusQuery.run(client, task)
 
       if (!result) {
-        return
+        throw new Error()
       }
 
       expect(result.status).toBe('PastDue')
@@ -137,7 +137,7 @@ describe('taskStatus', () => {
       const result = await taskStatusQuery.run(client, task)
 
       if (!result) {
-        return
+        throw new Error()
       }
 
       expect(result.status).toBe('PastDue')
@@ -161,7 +161,7 @@ describe('taskStatus', () => {
       const result = await taskStatusQuery.run(client, task)
 
       if (!result) {
-        return
+        throw new Error()
       }
 
       expect(result.status).toBe('Completed')
