@@ -47,7 +47,7 @@ describe('selectHasNotification', () => {
         throw new Error()
       }
 
-      expect(result.hasNotification).toBe(false)
+      expect(result.computedHasNotification).toBe(false)
     })
 
     it('should return notification for otherUser', async () => {
@@ -59,7 +59,7 @@ describe('selectHasNotification', () => {
         throw new Error()
       }
 
-      expect(result.hasNotification).toBe(true)
+      expect(result.computedHasNotification).toBe(true)
     })
   })
 
@@ -91,7 +91,7 @@ describe('selectHasNotification', () => {
         throw new Error()
       }
 
-      expect(result.hasNotification).toBe(false)
+      expect(result.computedHasNotification).toBe(false)
     })
   })
 
@@ -131,7 +131,7 @@ describe('selectHasNotification', () => {
         throw new Error()
       }
 
-      expect(result.hasNotification).toBe(false)
+      expect(result.computedHasNotification).toBe(false)
     })
 
     it('should return notification for otherUser', async () => {
@@ -143,7 +143,7 @@ describe('selectHasNotification', () => {
         throw new Error()
       }
 
-      expect(result.hasNotification).toBe(true)
+      expect(result.computedHasNotification).toBe(true)
     })
   })
 })
