@@ -38,6 +38,30 @@ describe('selectHasNotification', () => {
       task = result.task
     })
 
+    it.only('should not return notification for currentUser', async () => {
+      // Can't use TX now as it's unsupported in the TS client
+      await currentUserClient.transaction(async (tx) => {
+        const { task } = await createTaskQuery.run(tx, {
+          title: 'Task',
+          dueAt: new Date(),
+          assignees: [currentUser.id, otherUser.id],
+        })
+
+        const result = await hasNotificationQuery.run(tx, {
+          id: task.id,
+        })
+
+        if (!result) {
+          throw new Error()
+        }
+
+        expect(result.computedHasNotification).toBe(false)
+
+        // This could have better API, e.g. tx.rollback(), as the execute takes in any query https://www.edgedb.com/docs/clients/js/driver#transactions
+        await tx.execute('rollback') // Throws: DisabledCapabilityError: cannot execute transaction control commands
+      })
+    })
+
     it('should not return notification for currentUser', async () => {
       const result = await hasNotificationQuery.run(currentUserClient, {
         id: task.id,
