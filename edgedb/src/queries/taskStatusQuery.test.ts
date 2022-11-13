@@ -3,7 +3,7 @@ import { User } from '../../dbschema/interfaces'
 import e from '../edgedb/builder'
 import { client } from '../edgedb/client'
 import { createTaskQuery } from './createTaskQuery'
-import { Client } from 'edgedb'
+import { Client, DateDuration } from 'edgedb'
 import { cleanup } from './helpers/cleanup'
 
 describe('taskStatusQuery', () => {
@@ -51,7 +51,6 @@ describe('taskStatusQuery', () => {
     it('equals InProgress when last action is Edited', async () => {
       const { task } = await createTaskQuery.run(currentUserClient, {
         title,
-        dueAt,
         assignees: [currentUser.id],
       })
 
@@ -98,19 +97,13 @@ describe('taskStatusQuery', () => {
   })
 
   describe('with the due date in the past', () => {
-    let dueAt: Date
     const title = 'test'
-
-    beforeAll(async () => {
-      dueAt = await e
-        .select(e.op(e.datetime_current(), '-', e.cal.date_duration('2 days')))
-        .run(client)
-    })
+    const deadline = new DateDuration(0, 0, 0, -2)
 
     it('equals PastDue when last action is Opened', async () => {
       const { task } = await createTaskQuery.run(currentUserClient, {
         title,
-        dueAt,
+        deadline,
         assignees: [currentUser.id],
       })
 
@@ -126,7 +119,7 @@ describe('taskStatusQuery', () => {
     it('equals PastDue when last action is Edited', async () => {
       const { task } = await createTaskQuery.run(currentUserClient, {
         title,
-        dueAt,
+        deadline,
         assignees: [currentUser.id],
       })
 
@@ -150,7 +143,7 @@ describe('taskStatusQuery', () => {
     it('equals Completed when last action is Closed', async () => {
       const { task } = await createTaskQuery.run(currentUserClient, {
         title,
-        dueAt,
+        deadline,
         assignees: [currentUser.id],
       })
 
