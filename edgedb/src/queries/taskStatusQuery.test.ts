@@ -5,6 +5,7 @@ import { client } from '../edgedb/client'
 import { createTaskQuery } from './createTaskQuery'
 import { Client, DateDuration } from 'edgedb'
 import { cleanup } from './helpers/cleanup'
+import { insertTaskActionQuery } from './helpers/insertTaskAction'
 
 describe('taskStatusQuery', () => {
   let currentUser: User
@@ -147,13 +148,10 @@ describe('taskStatusQuery', () => {
         assignees: [currentUser.id],
       })
 
-      await e
-        .insert(e.TaskAction, {
-          kind: e.TaskActionKind.Closed,
-          user: e.global.currentUser,
-          task: e.select(e.Task, () => ({ filter_single: { id: task.id } })),
-        })
-        .run(currentUserClient)
+      await insertTaskActionQuery.run(currentUserClient, {
+        id: task.id,
+        kind: 'Closed',
+      })
 
       const result = await taskStatusQuery.run(client, task)
 
